@@ -1,3 +1,4 @@
+"use client";
 import {
   LayoutDashboard,
   Package,
@@ -128,7 +129,7 @@ function AppSideBar() {
                     tooltip={item.title}
                   >
                     <Link href={item.path}>
-                      <item.icon className="h-5 w-5" />
+                      <item.icon className="h-5 w-5'use client'" />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
