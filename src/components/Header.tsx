@@ -12,9 +12,10 @@ interface HeaderProps {
 
 const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
   const isMobile = useIsMobile();
+
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-      <div className="px-4 sm:px-6 h-16 flexx items-center justify-between">
+      <div className="px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Left: Menu button and search */}
         <div className="flex items-center space-x-4">
           {isMobile && (
@@ -32,8 +33,8 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
             </div>
           </div>
         </div>
-        {/* Right: Actions  */}
 
+        {/* Right: Actions */}
         <div className="flex items-center space-x-4">
           <button className="p-1 rounded-full text-gray-500 hover:text-gray-700 relative">
             <BellIcon className="h-6 w-6" />

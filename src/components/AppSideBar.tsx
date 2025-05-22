@@ -143,16 +143,16 @@ function AppSideBar() {
       <SidebarFooter className="px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-inventory-secondary flex items-center justify-center text-white font-semibold">
+            <div className="w-8 h-8 rounded-full bg-inventory-secondary flex items-center justify-center text-black font-semibold">
               JS
             </div>
 
             <div className="ml-2">
-              <div className="text-sm font-medium text-white">Mcwachira</div>
-              <div className="text-xs text-gray-300">Administrator</div>
+              <div className="text-sm font-medium text-black">Mcwachira</div>
+              <div className="text-xs text-gray-600">Administrator</div>
             </div>
           </div>
-          <button className="p-2 rounded-md hover:bg-inventory-secondary text-white">
+          <button className="p-2 rounded-md hover:bg-inventory-secondary text-black">
             <LogOut className="h-4 w-4" />
           </button>
         </div>
