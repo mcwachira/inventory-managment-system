@@ -24,6 +24,30 @@ export interface NavItem {
   children?: NavItem[];
 }
 
+// User role type
+export type UserRole =
+  | "admin"
+  | "inventory_manager"
+  | "sales_staff"
+  | "purchasing_agent"
+  | "viewer";
+
+// Role permissions mapping
+export interface RolePermissions {
+  canViewDashboard: boolean;
+  canManageItems: boolean;
+  canManageInventory: boolean;
+  canManageSales: boolean;
+  canManagePurchases: boolean;
+  canManageCustomers: boolean;
+  canManageVendors: boolean;
+  canManageInvoices: boolean;
+  canManageReports: boolean;
+  canManageWarehouses: boolean;
+  canManageShipping: boolean;
+  canManageSettings: boolean;
+}
+
 export interface Item {
   id: string;
   name: string;
@@ -38,6 +62,20 @@ export interface Item {
   image?: string;
   createdAt: Date;
   updatedAt: Date;
+  status: string;
+  sellingPrice: number;
+  costPrice: number;
+  barcode: string;
+  weight: number;
+  dimensions: string;
+  attributes?: Record<string, string | number>;
+  minStockLevel: number;
+  reorderPoint: number;
+  location?: {
+    warehouse: string;
+    aisle: string;
+    shelf: string;
+  };
 }
 
 export interface StockMovement {
@@ -61,7 +99,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "manager" | "staff";
+  role: UserRole;
   avatar?: string;
 }
 
@@ -146,6 +184,149 @@ export interface Invoice {
   notes?: string;
 }
 
+export interface PurchaseOrder {
+  id: string;
+  poNumber: string;
+  supplierName: string;
+  supplierId: string;
+  date: Date;
+  dueDate: Date;
+  items: PurchaseOrderItem[];
+  total: number;
+  tax?: number;
+  notes?: string;
+  status: "draft" | "pending" | "approved" | "completed" | "cancelled";
+  billCreated?: boolean;
+  history?: PurchaseOrderEvent[];
+  attachments?: Attachment[];
+}
+
+export interface PurchaseOrderItem {
+  itemId: string;
+  name: string;
+  description: string;
+  quantity: number;
+  price: number;
+}
+
+export interface PurchaseOrderEvent {
+  type: "status_change" | "comment" | "update";
+  timestamp: Date;
+  user: string;
+  description: string;
+}
+
+export interface Bill {
+  id: string;
+  billNumber: string;
+  supplierName: string;
+  supplierId: string;
+  date: Date;
+  dueDate: Date;
+  poReference?: string;
+  amount: number;
+  tax: number;
+  status: "pending" | "paid" | "overdue" | "cancelled";
+  paymentDate?: Date;
+}
+
+export interface PurchaseReturn {
+  id: string;
+  returnNumber: string;
+  supplierName: string;
+  supplierId: string;
+  date: Date;
+  relatedPO?: string;
+  status: "pending" | "approved" | "completed";
+  amount: number;
+  items: PurchaseReturnItem[];
+  notes?: string;
+  attachments?: Attachment[];
+}
+
+export interface PurchaseReturnItem {
+  itemId: string;
+  name: string;
+  description?: string;
+  quantity: number;
+  price: number;
+  reason?: string;
+}
+
+// Role permissions configuration
+export const rolePermissions: Record<UserRole, RolePermissions> = {
+  admin: {
+    canViewDashboard: true,
+    canManageItems: true,
+    canManageInventory: true,
+    canManageSales: true,
+    canManagePurchases: true,
+    canManageCustomers: true,
+    canManageVendors: true,
+    canManageInvoices: true,
+    canManageReports: true,
+    canManageWarehouses: true,
+    canManageShipping: true,
+    canManageSettings: true,
+  },
+  inventory_manager: {
+    canViewDashboard: true,
+    canManageItems: true,
+    canManageInventory: true,
+    canManageSales: false,
+    canManagePurchases: false,
+    canManageCustomers: false,
+    canManageVendors: false,
+    canManageInvoices: false,
+    canManageReports: true,
+    canManageWarehouses: true,
+    canManageShipping: true,
+    canManageSettings: false,
+  },
+  sales_staff: {
+    canViewDashboard: true,
+    canManageItems: true,
+    canManageInventory: false,
+    canManageSales: true,
+    canManagePurchases: false,
+    canManageCustomers: true,
+    canManageVendors: false,
+    canManageInvoices: true,
+    canManageReports: false,
+    canManageWarehouses: false,
+    canManageShipping: false,
+    canManageSettings: false,
+  },
+  purchasing_agent: {
+    canViewDashboard: true,
+    canManageItems: true,
+    canManageInventory: false,
+    canManageSales: false,
+    canManagePurchases: true,
+    canManageCustomers: false,
+    canManageVendors: true,
+    canManageInvoices: false,
+    canManageReports: false,
+    canManageWarehouses: false,
+    canManageShipping: false,
+    canManageSettings: false,
+  },
+  viewer: {
+    canViewDashboard: true,
+    canManageItems: false,
+    canManageInventory: false,
+    canManageSales: false,
+    canManagePurchases: false,
+    canManageCustomers: false,
+    canManageVendors: false,
+    canManageInvoices: false,
+    canManageReports: true,
+    canManageWarehouses: false,
+    canManageShipping: false,
+    canManageSettings: false,
+  },
+};
+
 // Mock Data
 export const navigationItems: NavItem[] = [
   {
@@ -220,6 +401,24 @@ export const mockItems: Item[] = [
       "Ergonomic wireless mouse with precision tracking and long battery life.",
     createdAt: new Date("2023-01-10"),
     updatedAt: new Date("2023-05-15"),
+    status: "In Stock",
+    sellingPrice: 24.99,
+    costPrice: 18.75,
+    barcode: "TG-WM-001-24",
+    weight: 0.25,
+    dimensions: "10cm x 6cm x 3cm",
+    attributes: {
+      Color: "Black",
+      Connection: "Wireless",
+      "Battery Life": "12 months",
+    },
+    minStockLevel: 5,
+    reorderPoint: 15,
+    location: {
+      warehouse: "Main Warehouse",
+      aisle: "A1",
+      shelf: "S3",
+    },
   },
   {
     id: "2",
@@ -235,6 +434,24 @@ export const mockItems: Item[] = [
       "Premium mechanical keyboard with customizable RGB lighting and tactile keys.",
     createdAt: new Date("2023-01-15"),
     updatedAt: new Date("2023-05-18"),
+    status: "In Stock",
+    sellingPrice: 89.99,
+    costPrice: 65.5,
+    barcode: "TG-KB-002-89",
+    weight: 1.2,
+    dimensions: "44cm x 14cm x 4cm",
+    attributes: {
+      Color: "Black",
+      "Switch Type": "Cherry MX Brown",
+      Backlight: "RGB",
+    },
+    minStockLevel: 3,
+    reorderPoint: 8,
+    location: {
+      warehouse: "Main Warehouse",
+      aisle: "A2",
+      shelf: "S1",
+    },
   },
   {
     id: "3",
@@ -250,6 +467,24 @@ export const mockItems: Item[] = [
       "Ultra-wide 27-inch monitor with 4K resolution and adjustable stand.",
     createdAt: new Date("2023-02-05"),
     updatedAt: new Date("2023-05-10"),
+    status: "In Stock",
+    sellingPrice: 199.99,
+    costPrice: 149.99,
+    barcode: "VC-MON-003-199",
+    weight: 5.8,
+    dimensions: "61cm x 37cm x 21cm",
+    attributes: {
+      Resolution: "3840x2160",
+      "Panel Type": "IPS",
+      "Refresh Rate": "60Hz",
+    },
+    minStockLevel: 2,
+    reorderPoint: 5,
+    location: {
+      warehouse: "West Coast Facility",
+      aisle: "B3",
+      shelf: "S2",
+    },
   },
   {
     id: "4",
@@ -265,6 +500,24 @@ export const mockItems: Item[] = [
       "High-speed USB-C charging and data transfer cable with braided nylon cover.",
     createdAt: new Date("2023-02-10"),
     updatedAt: new Date("2023-04-28"),
+    status: "In Stock",
+    sellingPrice: 12.99,
+    costPrice: 7.5,
+    barcode: "CP-CBL-004-12",
+    weight: 0.1,
+    dimensions: "1m x 1cm x 1cm",
+    attributes: {
+      Length: "1m",
+      Color: "Black",
+      "Data Speed": "10Gbps",
+    },
+    minStockLevel: 10,
+    reorderPoint: 25,
+    location: {
+      warehouse: "Main Warehouse",
+      aisle: "C1",
+      shelf: "S4",
+    },
   },
   {
     id: "5",
@@ -280,6 +533,24 @@ export const mockItems: Item[] = [
       "Noise-canceling wireless headphones with 30-hour battery life.",
     createdAt: new Date("2023-02-18"),
     updatedAt: new Date("2023-05-05"),
+    status: "Low Stock",
+    sellingPrice: 149.99,
+    costPrice: 110.0,
+    barcode: "SW-HP-005-149",
+    weight: 0.35,
+    dimensions: "19cm x 17cm x 8cm",
+    attributes: {
+      Color: "Black",
+      "Battery Life": "30 hours",
+      "Noise Cancellation": "Active",
+    },
+    minStockLevel: 5,
+    reorderPoint: 12,
+    location: {
+      warehouse: "Midwest Distribution Center",
+      aisle: "A4",
+      shelf: "S2",
+    },
   },
   {
     id: "6",
@@ -295,6 +566,24 @@ export const mockItems: Item[] = [
       "Adjustable aluminum laptop stand for improved ergonomics and cooling.",
     createdAt: new Date("2023-03-01"),
     updatedAt: new Date("2023-05-12"),
+    status: "In Stock",
+    sellingPrice: 34.95,
+    costPrice: 22.0,
+    barcode: "EP-STD-006-34",
+    weight: 0.9,
+    dimensions: "25cm x 21cm x 3cm (folded)",
+    attributes: {
+      Material: "Aluminum",
+      Color: "Silver",
+      "Adjustable Heights": "6",
+    },
+    minStockLevel: 5,
+    reorderPoint: 15,
+    location: {
+      warehouse: "Main Warehouse",
+      aisle: "D2",
+      shelf: "S1",
+    },
   },
   {
     id: "7",
@@ -310,6 +599,24 @@ export const mockItems: Item[] = [
       "Compact 1TB external SSD with USB 3.2 interface for ultra-fast transfers.",
     createdAt: new Date("2023-03-15"),
     updatedAt: new Date("2023-05-01"),
+    status: "Low Stock",
+    sellingPrice: 129.99,
+    costPrice: 95.0,
+    barcode: "DF-SSD-007-129",
+    weight: 0.15,
+    dimensions: "10cm x 5cm x 1cm",
+    attributes: {
+      Capacity: "1TB",
+      Interface: "USB 3.2",
+      "Read Speed": "550MB/s",
+    },
+    minStockLevel: 3,
+    reorderPoint: 8,
+    location: {
+      warehouse: "West Coast Facility",
+      aisle: "C3",
+      shelf: "S4",
+    },
   },
   {
     id: "8",
@@ -325,6 +632,24 @@ export const mockItems: Item[] = [
       "Fast wireless charging pad compatible with all Qi-enabled devices.",
     createdAt: new Date("2023-03-22"),
     updatedAt: new Date("2023-04-30"),
+    status: "In Stock",
+    sellingPrice: 29.95,
+    costPrice: 18.5,
+    barcode: "PU-CHG-008-29",
+    weight: 0.2,
+    dimensions: "10cm x 10cm x 1.5cm",
+    attributes: {
+      Color: "White",
+      Output: "15W",
+      "Compatible With": "All Qi devices",
+    },
+    minStockLevel: 7,
+    reorderPoint: 15,
+    location: {
+      warehouse: "Main Warehouse",
+      aisle: "B2",
+      shelf: "S3",
+    },
   },
 ];
 
@@ -439,13 +764,25 @@ export const mockUsers: User[] = [
     id: "2",
     name: "Sarah Johnson",
     email: "sarah@example.com",
-    role: "manager",
+    role: "inventory_manager",
   },
   {
     id: "3",
     name: "Michael Brown",
     email: "michael@example.com",
-    role: "staff",
+    role: "sales_staff",
+  },
+  {
+    id: "4",
+    name: "Emily Davis",
+    email: "emily@example.com",
+    role: "purchasing_agent",
+  },
+  {
+    id: "5",
+    name: "Robert Wilson",
+    email: "robert@example.com",
+    role: "viewer",
   },
 ];
 
@@ -797,6 +1134,275 @@ export const mockInvoices: Invoice[] = [
     tax: 31.19,
     discount: 15.0,
     status: "draft",
+  },
+];
+
+export const mockPurchaseOrders: PurchaseOrder[] = [
+  {
+    id: "po1",
+    poNumber: "PO-2023-001",
+    supplierName: "Component Supply Co.",
+    supplierId: "v1",
+    date: new Date("2023-05-01"),
+    dueDate: new Date("2023-05-31"),
+    items: [
+      {
+        itemId: "1",
+        name: "Wireless Mouse",
+        description:
+          "Ergonomic wireless mouse with precision tracking and long battery life.",
+        quantity: 20,
+        price: 22.5,
+      },
+      {
+        itemId: "2",
+        name: "Mechanical Keyboard",
+        description:
+          "Premium mechanical keyboard with customizable RGB lighting and tactile keys.",
+        quantity: 10,
+        price: 75.0,
+      },
+    ],
+    total: 1200.0,
+    tax: 72.0,
+    status: "completed",
+    billCreated: true,
+    history: [
+      {
+        type: "status_change",
+        timestamp: new Date("2023-05-01T09:00:00"),
+        user: "John Smith",
+        description: "Purchase order created",
+      },
+      {
+        type: "status_change",
+        timestamp: new Date("2023-05-01T14:30:00"),
+        user: "Sarah Johnson",
+        description: "Status changed from draft to approved",
+      },
+      {
+        type: "comment",
+        timestamp: new Date("2023-05-15T10:15:00"),
+        user: "John Smith",
+        description: "Supplier confirmed shipment",
+      },
+      {
+        type: "status_change",
+        timestamp: new Date("2023-05-31T11:00:00"),
+        user: "Sarah Johnson",
+        description: "Status changed from approved to completed",
+      },
+    ],
+    attachments: [
+      {
+        id: "att1",
+        name: "PO-001-Confirmation.pdf",
+        type: "PDF Document",
+        size: 1234567,
+        dateAdded: new Date("2023-05-01"),
+        url: "#",
+      },
+      {
+        id: "att2",
+        name: "Supplier_Invoice.pdf",
+        type: "PDF Document",
+        size: 987654,
+        dateAdded: new Date("2023-05-31"),
+        url: "#",
+      },
+    ],
+  },
+  {
+    id: "po2",
+    poNumber: "PO-2023-002",
+    supplierName: "Tech Hardware Inc.",
+    supplierId: "v2",
+    date: new Date("2023-05-15"),
+    dueDate: new Date("2023-06-15"),
+    items: [
+      {
+        itemId: "3",
+        name: "27-inch Monitor",
+        description:
+          "Ultra-wide 27-inch monitor with 4K resolution and adjustable stand.",
+        quantity: 5,
+        price: 189.99,
+      },
+      {
+        itemId: "7",
+        name: "External SSD 1TB",
+        description:
+          "Compact 1TB external SSD with USB 3.2 interface for ultra-fast transfers.",
+        quantity: 8,
+        price: 119.99,
+      },
+    ],
+    total: 1909.87,
+    tax: 114.59,
+    status: "approved",
+    history: [
+      {
+        type: "status_change",
+        timestamp: new Date("2023-05-15T13:20:00"),
+        user: "John Smith",
+        description: "Purchase order created",
+      },
+      {
+        type: "status_change",
+        timestamp: new Date("2023-05-16T09:45:00"),
+        user: "Sarah Johnson",
+        description: "Status changed from draft to approved",
+      },
+    ],
+  },
+  {
+    id: "po3",
+    poNumber: "PO-2023-003",
+    supplierName: "Component Supply Co.",
+    supplierId: "v1",
+    date: new Date("2023-06-01"),
+    dueDate: new Date("2023-07-01"),
+    items: [
+      {
+        itemId: "4",
+        name: "USB-C Cable",
+        description:
+          "High-speed USB-C charging and data transfer cable with braided nylon cover.",
+        quantity: 50,
+        price: 9.99,
+      },
+      {
+        itemId: "8",
+        name: "Wireless Charger",
+        description:
+          "Fast wireless charging pad compatible with all Qi-enabled devices.",
+        quantity: 15,
+        price: 24.99,
+      },
+    ],
+    total: 874.35,
+    tax: 52.46,
+    status: "pending",
+    history: [
+      {
+        type: "status_change",
+        timestamp: new Date("2023-06-01T10:00:00"),
+        user: "Sarah Johnson",
+        description: "Purchase order created",
+      },
+    ],
+  },
+  {
+    id: "po4",
+    poNumber: "PO-2023-004",
+    supplierName: "Tech Hardware Inc.",
+    supplierId: "v2",
+    date: new Date("2023-06-10"),
+    dueDate: new Date("2023-07-10"),
+    items: [
+      {
+        itemId: "5",
+        name: "Wireless Headphones",
+        description:
+          "Noise-canceling wireless headphones with 30-hour battery life.",
+        quantity: 10,
+        price: 129.99,
+      },
+    ],
+    total: 1429.89,
+    tax: 85.79,
+    status: "draft",
+    notes: "Need to confirm available stock with supplier before approving.",
+  },
+];
+
+export const mockBills: Bill[] = [
+  {
+    id: "bill1",
+    billNumber: "BILL-2023-001",
+    supplierName: "Component Supply Co.",
+    supplierId: "v1",
+    date: new Date("2023-05-31"),
+    dueDate: new Date("2023-06-30"),
+    poReference: "PO-2023-001",
+    amount: 1200.0,
+    tax: 72.0,
+    status: "paid",
+    paymentDate: new Date("2023-06-25"),
+  },
+  {
+    id: "bill2",
+    billNumber: "BILL-2023-002",
+    supplierName: "Tech Hardware Inc.",
+    supplierId: "v2",
+    date: new Date("2023-04-15"),
+    dueDate: new Date("2023-05-15"),
+    amount: 850.0,
+    tax: 51.0,
+    status: "paid",
+    paymentDate: new Date("2023-05-10"),
+  },
+  {
+    id: "bill3",
+    billNumber: "BILL-2023-003",
+    supplierName: "Component Supply Co.",
+    supplierId: "v1",
+    date: new Date("2023-06-05"),
+    dueDate: new Date("2023-07-05"),
+    amount: 456.75,
+    tax: 27.41,
+    status: "pending",
+  },
+];
+
+export const mockReturns: PurchaseReturn[] = [
+  {
+    id: "ret1",
+    returnNumber: "RET-2023-001",
+    supplierName: "Component Supply Co.",
+    supplierId: "v1",
+    date: new Date("2023-05-10"),
+    relatedPO: "PO-2023-001",
+    status: "completed",
+    amount: 112.5,
+    items: [
+      {
+        itemId: "1",
+        name: "Wireless Mouse",
+        quantity: 5,
+        price: 22.5,
+        reason: "Defective tracking",
+      },
+    ],
+    notes: "5 units were defective, supplier has agreed to full refund.",
+    attachments: [
+      {
+        id: "att1",
+        name: "Return_Authorization.pdf",
+        type: "PDF Document",
+        size: 234567,
+        dateAdded: new Date("2023-05-08"),
+        url: "#",
+      },
+    ],
+  },
+  {
+    id: "ret2",
+    returnNumber: "RET-2023-002",
+    supplierName: "Tech Hardware Inc.",
+    supplierId: "v2",
+    date: new Date("2023-06-05"),
+    status: "pending",
+    amount: 189.99,
+    items: [
+      {
+        itemId: "3",
+        name: "27-inch Monitor",
+        quantity: 1,
+        price: 189.99,
+        reason: "Dead pixels",
+      },
+    ],
   },
 ];
 
