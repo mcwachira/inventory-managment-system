@@ -6,7 +6,6 @@ import { Search, FilePlus, Download, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PurchaseOrderDialog from "@/components/purchases/PurchaseOrderDialog";
 import PurchaseOrderList from "@/components/purchases/PurchaseOrderList";
-import PurchaseOrderViewDialog from "@/components/purchases/PurchaseOrderViewDialog";
 
 const Purchases = () => {
   const { toast } = useToast();
