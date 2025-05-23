@@ -7,7 +7,16 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-import { Bar, BarChart } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import { salesData } from "@/lib/data";
 
 const InventoryChart = () => {
@@ -29,9 +38,10 @@ const InventoryChart = () => {
         <CardDescription>Monthly sales and purchase trends</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
-          {/* <ResponsiveContainer width="100%" height="100%">
+        <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart
+              accessibilityLayer
               data={salesData}
               margin={{
                 top: 5,
@@ -45,21 +55,15 @@ const InventoryChart = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="sales" name="Sales" fill="#4299E1" />
-              <Bar dataKey="purchases" name="Purchases" fill="#9F7AEA" />
-            </BarChart>
-          </ResponsiveContainer> */}
-          <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
-            <BarChart accessibilityLayer data={salesData}>
-              <Bar dataKey="sales" fill="var(--color-sales)" radius={4} />
+              <Bar dataKey="sales" fill="var(--color-sales)" radius={10} />
               <Bar
                 dataKey="purchases"
                 fill="var(--color-purchases)"
-                radius={4}
+                radius={10}
               />
             </BarChart>
-          </ChartContainer>
-        </div>
+          </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
