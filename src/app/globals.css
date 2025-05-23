@@ -44,7 +44,17 @@
 }
 
 :root {
+    /* Radius */
     --radius: 0.5rem;
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    /* Base Colors */
+    --border: 220 14% 90%;
+    --input: 220 14% 90%;
+    --ring: 220 14% 70%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
     --background: oklch(1 0 0);
     --foreground: oklch(0.141 0.005 285.823);
     --card: oklch(1 0 0);
@@ -76,6 +86,14 @@
     --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
     --sidebar-border: oklch(0.92 0.004 286.32);
     --sidebar-ring: oklch(0.623 0.214 259.815);
+    --inventory-primary: #1a365d;
+    --inventory-secondary: #4299e1;
+    --inventory-accent: #f6ad55;
+    --inventory-success: #48bb78;
+    --inventory-danger: #f56565;
+    --inventory-warning: #ecc94b;
+    --inventory-light: #f7fafc;
+    --inventory-dark: #2d3748;
 }
 
 .dark {
@@ -121,6 +139,33 @@
     }
 }
 
+/* Responsive design utilities */
+@layer utilities {
+    .responsive-container {
+        @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .responsive-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+    }
+
+    .responsive-card {
+        @apply p-4 sm:p-6;
+    }
+
+    .responsive-padding {
+        @apply p-4 sm:p-6 md:p-8;
+    }
+
+    .responsive-text {
+        @apply text-sm sm:text-base md:text-lg;
+    }
+
+    .responsive-heading {
+        @apply text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold;
+    }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
@@ -129,15 +174,24 @@
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
+    .dark & {
+        background: #333;
+    }
 }
 
 ::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 4px;
+    .dark & {
+        background: #666;
+    }
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: #a1a1a1;
+    .dark & {
+        background: #888;
+    }
 }
 
 /* Custom styles */
