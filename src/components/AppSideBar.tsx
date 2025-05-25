@@ -8,6 +8,8 @@ import {
   FileText,
   BarChart,
   Settings,
+  Container,
+  Truck,
   LogOut,
 } from "lucide-react";
 import {
@@ -65,6 +67,17 @@ const managementNavItems = [
     title: "Vendors",
     path: "/vendors",
     icon: Users,
+  },
+
+  {
+    title: "Crm",
+    path: "/crm",
+    icon: Users,
+  },
+  {
+    title: "Shipping",
+    path: "/shipping",
+    icon: Truck,
   },
   {
     title: "Invoices",
