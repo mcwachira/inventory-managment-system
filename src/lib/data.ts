@@ -253,6 +253,68 @@ export interface PurchaseReturnItem {
   reason?: string;
 }
 
+export type SalesOrderStatus =
+  | "draft"
+  | "confirmed"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
+
+export interface SalesOrders {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  date: string; // Format: YYYY-MM-DD
+  dueDate: string; // Format: YYYY-MM-DD
+  status: SalesOrderStatus;
+  total: number;
+  invoiceCreated: boolean;
+}
+
+export type TemplateCategory =
+  | "onboarding"
+  | "sales"
+  | "billing"
+  | "reminder"
+  | "order";
+
+export interface BaseTemplate {
+  id: number;
+  name: string;
+  content: string;
+  category: TemplateCategory;
+  usage: number;
+  lastModified: string; // Format: YYYY-MM-DD
+}
+
+export interface EmailTemplate extends BaseTemplate {
+  subject: string;
+}
+
+export interface SMSTemplate extends BaseTemplate {
+  // No additional fields for SMS, but we keep it separate in case of future expansion
+}
+
+export type CustomerActivityType =
+  | "email"
+  | "call"
+  | "meeting"
+  | "proposal"
+  | "payment";
+
+export type CustomerActivityStatus = "completed" | "scheduled" | "pending";
+
+export interface CustomerActivity {
+  id: number;
+  type: CustomerActivityType;
+  title: string;
+  description: string;
+  customer: string;
+  timestamp: Date;
+  user: string;
+  status: CustomerActivityStatus;
+}
+
 // Role permissions configuration
 export const rolePermissions: Record<UserRole, RolePermissions> = {
   admin: {
@@ -752,6 +814,112 @@ export const mockWarehouses: Warehouse[] = [
     location: "Chicago, IL",
   },
 ];
+export const mockEmailTemplates: EmailTemplate[] = [
+  {
+    id: 1,
+    name: "Welcome Email",
+    subject: "Welcome to Our Service!",
+    content:
+      "Dear {{customer_name}},\n\nWelcome to our platform! We're excited to have you on board...",
+    category: "onboarding",
+    usage: 45,
+    lastModified: "2024-01-15",
+  },
+  {
+    id: 2,
+    name: "Follow-up Proposal",
+    subject: "Following up on your proposal",
+    content:
+      "Hi {{customer_name}},\n\nI wanted to follow up on the proposal we sent...",
+    category: "sales",
+    usage: 23,
+    lastModified: "2024-01-10",
+  },
+  {
+    id: 3,
+    name: "Payment Reminder",
+    subject: "Payment Due Reminder",
+    content:
+      "Dear {{customer_name}},\n\nThis is a friendly reminder that your payment...",
+    category: "billing",
+    usage: 67,
+    lastModified: "2024-01-12",
+  },
+];
+
+export const mockSMSTemplates: SMSTemplate[] = [
+  {
+    id: 4,
+    name: "Appointment Reminder",
+    content:
+      "Hi {{customer_name}}, this is a reminder for your appointment tomorrow at {{time}}.",
+    category: "reminder",
+    usage: 89,
+    lastModified: "2024-01-14",
+  },
+  {
+    id: 5,
+    name: "Order Confirmation",
+    content:
+      "Your order #{{order_number}} has been confirmed. Delivery expected in 2-3 days.",
+    category: "order",
+    usage: 156,
+    lastModified: "2024-01-13",
+  },
+];
+
+export const mockCustomerActivities: CustomerActivity[] = [
+  {
+    id: 1,
+    type: "email",
+    title: "Email sent to John Doe",
+    description: "Follow-up email regarding proposal",
+    customer: "John Doe",
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    user: "Sarah Wilson",
+    status: "completed",
+  },
+  {
+    id: 2,
+    type: "call",
+    title: "Phone call with Tech Solutions Inc.",
+    description: "Discussed implementation timeline",
+    customer: "Tech Solutions Inc.",
+    timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
+    user: "Mike Johnson",
+    status: "completed",
+  },
+  {
+    id: 3,
+    type: "meeting",
+    title: "Client meeting scheduled",
+    description: "Product demo with potential customer",
+    customer: "ABC Corporation",
+    timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
+    user: "Sarah Wilson",
+    status: "scheduled",
+  },
+  {
+    id: 4,
+    type: "proposal",
+    title: "Proposal sent",
+    description: "Custom solution proposal delivered",
+    customer: "Innovation Labs",
+    timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000),
+    user: "Alex Chen",
+    status: "pending",
+  },
+  {
+    id: 5,
+    type: "payment",
+    title: "Payment received",
+    description: "Invoice #INV-2023-045 paid",
+    customer: "GlobalTech Ltd.",
+    timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000),
+    user: "System",
+    status: "completed",
+  },
+];
 
 export const mockUsers: User[] = [
   {
@@ -785,7 +953,7 @@ export const mockUsers: User[] = [
     role: "viewer",
   },
 ];
-export const mockSalesOrders = [
+export const mockSalesOrders: SalesOrders[] = [
   {
     id: "so1",
     orderNumber: "SO-2023-001",
