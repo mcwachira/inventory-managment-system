@@ -271,6 +271,21 @@ export interface SalesOrders {
   invoiceCreated: boolean;
 }
 
+export interface OrderItem {
+  id: number;
+  name: string;
+  sku: string;
+  quantity: number;
+  location: string;
+}
+
+export interface OrderData {
+  orderNumber: string;
+  customerName: string;
+  customerAddress: string;
+  orderDate: string; // or Date, depending on how you handle dates
+  items: OrderItem[];
+}
 export type TemplateCategory =
   | "onboarding"
   | "sales"
@@ -315,6 +330,23 @@ export interface CustomerActivity {
   status: CustomerActivityStatus;
 }
 
+export type ShipmentStatus = "pending" | "in_transit" | "delivered";
+
+export interface Shipment {
+  id: string;
+  trackingNumber: string;
+  orderNumber: string;
+  customerName: string;
+  carrier: string;
+  service: string;
+  status: ShipmentStatus;
+  origin: string;
+  destination: string;
+  estimatedDelivery: string; // Consider using Date type if you'll parse this
+  shippedDate: string | null; // Or Date | null if you're using actual Date objects
+  weight: string;
+  dimensions: string;
+}
 // Role permissions configuration
 export const rolePermissions: Record<UserRole, RolePermissions> = {
   admin: {
@@ -921,6 +953,54 @@ export const mockCustomerActivities: CustomerActivity[] = [
   },
 ];
 
+export const mockShipments: Shipment[] = [
+  {
+    id: "ship1",
+    trackingNumber: "TRK123456789",
+    orderNumber: "SO-2023-001",
+    customerName: "Tech Solutions Inc.",
+    carrier: "FedEx",
+    service: "Express",
+    status: "in_transit",
+    origin: "Warehouse A",
+    destination: "New York, NY",
+    estimatedDelivery: "2023-06-20",
+    shippedDate: "2023-06-18",
+    weight: "2.5 lbs",
+    dimensions: "12x8x6 in",
+  },
+  {
+    id: "ship2",
+    trackingNumber: "TRK987654321",
+    orderNumber: "SO-2023-002",
+    customerName: "Office Supplies Co.",
+    carrier: "UPS",
+    service: "Ground",
+    status: "delivered",
+    origin: "Warehouse B",
+    destination: "Los Angeles, CA",
+    estimatedDelivery: "2023-06-19",
+    shippedDate: "2023-06-17",
+    weight: "1.8 lbs",
+    dimensions: "10x6x4 in",
+  },
+  {
+    id: "ship3",
+    trackingNumber: "TRK456789123",
+    orderNumber: "SO-2023-003",
+    customerName: "Global Electronics",
+    carrier: "DHL",
+    service: "International Express",
+    status: "pending",
+    origin: "Warehouse A",
+    destination: "London, UK",
+    estimatedDelivery: "2023-06-22",
+    shippedDate: null,
+    weight: "3.2 lbs",
+    dimensions: "14x10x8 in",
+  },
+];
+
 export const mockUsers: User[] = [
   {
     id: "1",
@@ -983,6 +1063,115 @@ export const mockSalesOrders: SalesOrders[] = [
     status: "draft",
     total: 899.75,
     invoiceCreated: false,
+  },
+];
+
+export const mockOrderData: OrderData[] = [
+  {
+    orderNumber: "SO-2023-001",
+    customerName: "Tech Solutions Inc.",
+    customerAddress: "123 Business Ave\nNew York, NY 10001",
+    orderDate: "2023-06-15",
+    items: [
+      {
+        id: 1,
+        name: "Wireless Mouse",
+        sku: "WM001",
+        quantity: 2,
+        location: "A1-B2",
+      },
+      {
+        id: 2,
+        name: "USB Cable",
+        sku: "UC003",
+        quantity: 5,
+        location: "A2-C1",
+      },
+      { id: 3, name: "Keyboard", sku: "KB007", quantity: 1, location: "B1-A3" },
+    ],
+  },
+  {
+    orderNumber: "SO-2023-002",
+    customerName: "Office Supplies Co.",
+    customerAddress: "456 Office Blvd\nLos Angeles, CA 90001",
+    orderDate: "2023-06-16",
+    items: [
+      { id: 4, name: "Stapler", sku: "STP010", quantity: 3, location: "C2-D1" },
+      {
+        id: 5,
+        name: "Printer Paper",
+        sku: "PP100",
+        quantity: 10,
+        location: "C3-E1",
+      },
+    ],
+  },
+  {
+    orderNumber: "SO-2023-003",
+    customerName: "Global Electronics",
+    customerAddress: "789 Tech Park\nSan Francisco, CA 94105",
+    orderDate: "2023-06-17",
+    items: [
+      {
+        id: 6,
+        name: "HDMI Cable",
+        sku: "HDMI004",
+        quantity: 4,
+        location: "D1-E2",
+      },
+      {
+        id: 7,
+        name: "Monitor Stand",
+        sku: "MS055",
+        quantity: 2,
+        location: "D2-F3",
+      },
+      { id: 8, name: "USB Hub", sku: "USBH22", quantity: 1, location: "D4-F1" },
+    ],
+  },
+  {
+    orderNumber: "SO-2023-004",
+    customerName: "Smart Home Inc.",
+    customerAddress: "321 Innovation Dr\nAustin, TX 73301",
+    orderDate: "2023-06-18",
+    items: [
+      {
+        id: 9,
+        name: "Smart Plug",
+        sku: "SP001",
+        quantity: 5,
+        location: "E1-G2",
+      },
+      {
+        id: 10,
+        name: "Wi-Fi Router",
+        sku: "WR1200",
+        quantity: 1,
+        location: "E3-H1",
+      },
+    ],
+  },
+  {
+    orderNumber: "SO-2023-005",
+    customerName: "GreenTech Solutions",
+    customerAddress: "654 Eco St\nPortland, OR 97201",
+    orderDate: "2023-06-19",
+    items: [
+      {
+        id: 11,
+        name: "Solar Panel Charger",
+        sku: "SPC150",
+        quantity: 3,
+        location: "F1-J2",
+      },
+      {
+        id: 12,
+        name: "LED Light Bulb",
+        sku: "LED25W",
+        quantity: 6,
+        location: "F2-K3",
+      },
+    ],
   },
 ];
 
