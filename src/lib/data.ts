@@ -89,10 +89,19 @@ export interface StockMovement {
   notes?: string;
 }
 
+export type WarehouseStatus = "active" | "inactive";
+
 export interface Warehouse {
   id: string;
   name: string;
   location: string;
+  manager: string;
+  phone: string;
+  email: string;
+  capacity: number;
+  status: WarehouseStatus;
+  autoReorder: boolean;
+  lowStockAlert: boolean;
 }
 
 export interface User {
@@ -834,16 +843,37 @@ export const mockWarehouses: Warehouse[] = [
     id: "1",
     name: "Main Warehouse",
     location: "New York, NY",
+    manager: "John Smith",
+    phone: "+1 (555) 123-4567",
+    email: "warehouse.ny@company.com",
+    capacity: 10000,
+    status: "active",
+    autoReorder: true,
+    lowStockAlert: true,
   },
   {
     id: "2",
     name: "West Coast Facility",
     location: "Los Angeles, CA",
+    manager: "Sarah Johnson",
+    phone: "+1 (555) 987-6543",
+    email: "warehouse.la@company.com",
+    capacity: 8500,
+    status: "active",
+    autoReorder: false,
+    lowStockAlert: true,
   },
   {
     id: "3",
     name: "Midwest Distribution Center",
     location: "Chicago, IL",
+    manager: "Mike Wilson",
+    phone: "+1 (555) 456-7890",
+    email: "warehouse.chi@company.com",
+    capacity: 12000,
+    status: "inactive",
+    autoReorder: true,
+    lowStockAlert: false,
   },
 ];
 export const mockEmailTemplates: EmailTemplate[] = [
