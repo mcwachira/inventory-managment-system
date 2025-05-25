@@ -785,6 +785,38 @@ export const mockUsers: User[] = [
     role: "viewer",
   },
 ];
+export const mockSalesOrders = [
+  {
+    id: "so1",
+    orderNumber: "SO-2023-001",
+    customerName: "Tech Solutions Inc.",
+    date: "2023-06-15",
+    dueDate: "2023-06-22",
+    status: "confirmed",
+    total: 1249.99,
+    invoiceCreated: false,
+  },
+  {
+    id: "so2",
+    orderNumber: "SO-2023-002",
+    customerName: "Office Supplies Co.",
+    date: "2023-06-16",
+    dueDate: "2023-06-23",
+    status: "shipped",
+    total: 599.5,
+    invoiceCreated: true,
+  },
+  {
+    id: "so3",
+    orderNumber: "SO-2023-003",
+    customerName: "Global Electronics",
+    date: "2023-06-17",
+    dueDate: "2023-06-24",
+    status: "draft",
+    total: 899.75,
+    invoiceCreated: false,
+  },
+];
 
 export const mockOrders: Order[] = [
   {
