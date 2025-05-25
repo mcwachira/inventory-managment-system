@@ -252,7 +252,7 @@ export const ShippingLabelDialog = ({
             </CardContent>
           </Card>
 
-          <div className="flex justify-between">
+          <div className="flex justify-between flex-wrap   gap-4">
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
