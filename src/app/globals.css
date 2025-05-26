@@ -195,6 +195,15 @@
 }
 
 /* Custom styles */
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 .dashboard-card {
     @apply bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow duration-300;
 }
